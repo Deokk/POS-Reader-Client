@@ -44,4 +44,4 @@ def click_img(table_count):
         k = cv.waitKey(1) & 0xFF
     cv.destroyAllWindows()
 
-    return point,color
+    return point, color[0]
