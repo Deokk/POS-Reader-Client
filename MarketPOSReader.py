@@ -81,16 +81,18 @@ class Table(QWidget):
         self.read_info()
 
     def start_capture(self):
-        if self.capture_button.text() == 'POS 캡쳐 및 전송':
-            self.showMinimized()
-            self.capture_button.setText('캡쳐 중지')
-            client.socket_communicator.thread_ongoing = True
-            self.capturing_thread = threading.Thread(target=self.server_socket.capturing_sequence, args=(self.server_socket, ))
-            self.capturing_thread.start()
+        if self.server_socket is not None:
+            if self.capture_button.text() == 'POS 캡쳐 및 전송':
+                self.showMinimized()
+                self.capture_button.setText('캡쳐 중지')
+                client.socket_communicator.thread_ongoing = True
+                self.capturing_thread = threading.Thread(target=self.server_socket.capturing_sequence,
+                                                         args=(self.server_socket,))
+                self.capturing_thread.start()
 
-        elif self.capture_button.text() == '캡쳐 중지':
-            self.capture_button.setText('POS 캡쳐 및 전송')
-            client.socket_communicator.thread_ongoing = False
+            elif self.capture_button.text() == '캡쳐 중지':
+                self.capture_button.setText('POS 캡쳐 및 전송')
+                client.socket_communicator.thread_ongoing = False
 
     def connect_server(self):
         try:
