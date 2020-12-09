@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtWidgets import *
 
 import client
@@ -12,44 +12,77 @@ def print_debug(line):
         print(line)
 
 
-class MarketPOSReader(QWidget):
-    server_socket = None
-    capturing_thread = None
+class App(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.title = 'MarketPOSReader'
+        self.setWindowTitle(self.title)
+        self.setGeometry(100, 100, 300, 200)
 
+        self.table_widget = Table(self)
+        self.setCentralWidget(self.table_widget)
+
+        self.show()
+
+
+class Table(QWidget):
+    s = None
     company_id = None
     company_name = None
     company_address = None
     company_table_address = None
     company_table_count = None
+    t = None
+    thread_ongoing = False
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super(QWidget, self).__init__(parent)
+        self.layout = QVBoxLayout(self)
 
-        self.market_ID = 'test'
-        self.id = 'id'
-        self.pw = 'pw'
+        self.tabs = QTabWidget()
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+        self.tabs.resize(300, 200)
+
+        self.tabs.addTab(self.tab1, "POS-Reader")
+        self.tabs.addTab(self.tab2, "Settings")
+
         self.capture_button = QPushButton('POS 캡쳐 및 전송')
-        self.setting_button = QPushButton('매장 정보 설정')
-        self.cancel_button = QPushButton('종료', self)
         self.connect_server_button = QPushButton('서버 연결')
-        self.initUI()
-        self.read_info()
+        self.cancel_button = QPushButton('종료')
+        self.capture_button.clicked.connect(self.start_capture)
+        self.cancel_button.clicked.connect(QCoreApplication.instance().quit)
+        self.connect_server_button.clicked.connect(self.connect_server)
 
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
+        self.tab1.layout = QVBoxLayout(self)
+        self.tab1.layout.addWidget(self.capture_button)
+        self.tab1.layout.addWidget(self.connect_server_button)
+        self.tab1.layout.addWidget(self.cancel_button)
+        self.tab1.setLayout(self.tab1.layout)
+
+        self.name_input = QPushButton('매장명 변경')
+        self.table_input = QPushButton('테이블 변경')
+        self.region_input = QPushButton('매장주소 변경')
+        self.number_input = QPushButton('최대수용인원 변경')
+        self.name_input.clicked.connect(self.name_dialog)
+        self.table_input.clicked.connect(self.table_dialog)
+        self.region_input.clicked.connect(self.region_dialog)
+        self.number_input.clicked.connect(self.number_dialog)
+
+        self.tab2.layout = QVBoxLayout(self)
+        self.tab2.layout.addWidget(self.name_input)
+        self.tab2.layout.addWidget(self.table_input)
+        self.tab2.layout.addWidget(self.region_input)
+        self.tab2.layout.addWidget(self.number_input)
+        self.tab2.setLayout(self.tab2.layout)
+
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
+        self.read_info()
 
     def start_capture(self):
         if self.capture_button.text() == 'POS 캡쳐 및 전송':
             self.capture_button.setText('캡쳐 중지')
-            do_job.thread_ongoing = True
-            # self.showMinimized()
-            # time.sleep(0.3)
-            # img = ImageGrab.grab()
-            # self.s.send_img(img)
-            # self.showNormal()
             self.capturing_thread = threading.Thread(target=do_job.capturing_sequence, args=(self.server_socket,))
             self.capturing_thread.start()
 
@@ -63,6 +96,30 @@ class MarketPOSReader(QWidget):
             print('server connected')
         except:
             print('connection failure')
+
+    def name_dialog(self):
+        text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
+
+        if ok:
+            self.le.setText(str(text))
+
+    def table_dialog(self):
+        text, ok = QInputDialog.getText(self, '테이블 변경', '테이블:')
+
+        if ok:
+            self.le.setText(str(text))
+
+    def region_dialog(self):
+        text, ok = QInputDialog.getText(self, '매장주소 변경', '매장주소:')
+
+        if ok:
+            self.le.setText(str(text))
+
+    def number_dialog(self):
+        text, ok = QInputDialog.getText(self, '수용인원 변경', '매장주소:')
+
+        if ok:
+            self.le.setText(str(text))
 
     def read_info(self):
         try:
@@ -78,41 +135,8 @@ class MarketPOSReader(QWidget):
         except IndexError:
             print('File not correct')
 
-    def initUI(self):
-        self.center()
-        self.capture_button.clicked.connect(self.start_capture)
-        self.cancel_button.clicked.connect(QCoreApplication.instance().quit)
-        self.connect_server_button.clicked.connect(self.connect_server)
-
-        sub_box = QHBoxLayout()
-        sub_box.addStretch(1)
-        sub_box.addWidget(self.setting_button)
-        sub_box.addWidget(self.cancel_button)
-        sub_box.addStretch(1)
-
-        main_box = QHBoxLayout()
-        main_box.addStretch(2)
-        main_box.addWidget(self.capture_button)
-        main_box.addStretch(2)
-
-        main_box.addStretch(3)
-        main_box.addWidget(self.connect_server_button)
-        main_box.addStretch(3)
-
-        v_box = QVBoxLayout()
-        v_box.addStretch(1)
-        v_box.addLayout(main_box)
-        v_box.addStretch(1)
-        v_box.addLayout(sub_box)
-        v_box.addStretch(1)
-
-        self.setLayout(v_box)
-        self.setWindowTitle('MarketPOSReader')
-        self.setGeometry(300, 300, 300, 200)
-        self.show()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MarketPOSReader()
+    ex = App()
     sys.exit(app.exec_())
