@@ -116,7 +116,7 @@ class Table(QWidget):
             self.le.setText(str(text))
 
     def number_dialog(self):
-        text, ok = QInputDialog.getText(self, '수용인원 변경', '매장주소:')
+        text, ok = QInputDialog.getText(self, '수용인원 변경', '수용인원:')
 
         if ok:
             self.le.setText(str(text))
