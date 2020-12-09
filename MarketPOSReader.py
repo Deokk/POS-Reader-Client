@@ -17,7 +17,7 @@ class App(QMainWindow):
         super().__init__()
         self.title = 'MarketPOSReader'
         self.setWindowTitle(self.title)
-        self.setGeometry(100, 100, 300, 200)
+        self.setGeometry(800, 400, 300, 200)
 
         self.table_widget = Table(self)
         self.setCentralWidget(self.table_widget)
@@ -96,6 +96,15 @@ class Table(QWidget):
             print('server connected')
         except:
             print('connection failure')
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setText("서버 연결을 실패했습니다.")
+            msgBox.setWindowTitle("서버 연결 실패")
+            msgBox.setStandardButtons(QMessageBox.Ok)
+
+            returnValue = msgBox.exec()
+            if returnValue == QMessageBox.Ok:
+                print('OK clicked')
 
     def name_dialog(self):
         text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
