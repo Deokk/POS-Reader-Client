@@ -113,26 +113,38 @@ class Table(QWidget):
                 print('OK clicked')
 
     def name_dialog(self):
-        text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
+        if self.server_socket is not None:
+            text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
 
-        if ok:
-            self.server_socket.change_setting(0, text)
+            if ok:
+                self.server_socket.change_setting(0, text)
+        else:
+            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
 
     def table_dialog(self):
-        point, color = click.click_img(6)
-        self.server_socket.change_setting(1, (point, color))
+        if self.server_socket is not None:
+            point, color = click.click_img(6)
+            self.server_socket.change_setting(1, (point, color))
+        else:
+            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
 
     def region_dialog(self):
-        text, ok = QInputDialog.getText(self, '매장주소 변경', '매장주소:')
+        if self.server_socket is not None:
+            text, ok = QInputDialog.getText(self, '매장주소 변경', '매장주소:')
 
-        if ok:
-            self.server_socket.change_setting(2, text)
+            if ok:
+                self.server_socket.change_setting(2, text)
+        else:
+            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
 
     def number_dialog(self):
-        text, ok = QInputDialog.getText(self, '수용인원 변경', '수용인원:')
+        if self.server_socket is not None:
+            text, ok = QInputDialog.getText(self, '수용인원 변경', '수용인원:')
 
-        if ok:
-            self.server_socket.change_setting(3, text)
+            if ok:
+                self.server_socket.change_setting(3, text)
+        else:
+            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
 
     def read_info(self):
         try:
@@ -152,9 +164,6 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
-
-
-
 
 
 if __name__ == '__main__':
