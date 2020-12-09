@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import *
 
 import client
 import threading
-import do_job
 
 
 def print_debug(line):
@@ -26,14 +25,15 @@ class App(QMainWindow):
 
 
 class Table(QWidget):
-    s = None
+    server_socket = None
+    capturing_thread = None
+    thread_ongoing = False
+
     company_id = None
     company_name = None
     company_address = None
     company_table_address = None
     company_table_count = None
-    t = None
-    thread_ongoing = False
 
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
@@ -82,17 +82,20 @@ class Table(QWidget):
 
     def start_capture(self):
         if self.capture_button.text() == 'POS 캡쳐 및 전송':
+            self.showMinimized()
             self.capture_button.setText('캡쳐 중지')
-            self.capturing_thread = threading.Thread(target=do_job.capturing_sequence, args=(self.server_socket,))
+            client.socket_communicator.thread_ongoing = True
+            self.capturing_thread = threading.Thread(target=self.server_socket.capturing_sequence, args=(self.server_socket, ))
             self.capturing_thread.start()
 
         elif self.capture_button.text() == '캡쳐 중지':
             self.capture_button.setText('POS 캡쳐 및 전송')
-            do_job.thread_ongoing = False
+            client.socket_communicator.thread_ongoing = False
 
     def connect_server(self):
         try:
             self.server_socket = client.socket_communicator('localhost', 5001)
+            self.server_socket.company_id = self.company_id
             print('server connected')
         except:
             print('connection failure')
