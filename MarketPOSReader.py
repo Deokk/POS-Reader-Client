@@ -132,7 +132,7 @@ class Table(QWidget):
         text, ok = QInputDialog.getText(self, '수용인원 변경', '수용인원:')
 
         if ok:
-            self.le.setText(str(text))
+            self.server_socket.change_setting(3, text)
 
     def read_info(self):
         try:
@@ -143,10 +143,18 @@ class Table(QWidget):
             self.company_address = info[2]
             self.company_table_address = info[3]
             self.company_table_count = info[4]
-        except FileExistsError or FileNotFoundError:
-            print('Creation Needed')  # 여기서 팝업 창 띄울 것
+
+        except FileExistsError and FileNotFoundError:
+            self.new_market()
         except IndexError:
             print('File not correct')
+
+    def new_market(self):
+        self.connect_server()
+        new_id = self.server_socket.create_new_market()
+
+
+
 
 
 if __name__ == '__main__':
