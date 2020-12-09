@@ -1,10 +1,10 @@
 import sys
-import time
 from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtWidgets import *
-from PIL import ImageGrab
+
 import client
 import threading
+import do_job
 
 
 def print_debug(line):
@@ -13,10 +13,14 @@ def print_debug(line):
 
 
 class MarketPOSReader(QWidget):
-    s = None
+    server_socket = None
+    capturing_thread = None
+
     company_id = None
-    t = None
-    thread_ongoing = False
+    company_name = None
+    company_address = None
+    company_table_address = None
+    company_table_count = None
 
     def __init__(self):
         super().__init__()
@@ -40,29 +44,22 @@ class MarketPOSReader(QWidget):
     def start_capture(self):
         if self.capture_button.text() == 'POS 캡쳐 및 전송':
             self.capture_button.setText('캡쳐 중지')
-            self.thread_ongoing = True
+            do_job.thread_ongoing = True
             # self.showMinimized()
             # time.sleep(0.3)
             # img = ImageGrab.grab()
             # self.s.send_img(img)
             # self.showNormal()
-            self.t = threading.Thread(target=self.capturing_sequence)
-            self.t.start()
+            self.capturing_thread = threading.Thread(target=do_job.capturing_sequence, args=(self.server_socket,))
+            self.capturing_thread.start()
 
         elif self.capture_button.text() == '캡쳐 중지':
             self.capture_button.setText('POS 캡쳐 및 전송')
-            self.thread_ongoing = False
-
-    def capturing_sequence(self):
-        while self.thread_ongoing:
-            print_debug("sequence ongoing")
-            time.sleep(5)
-            img = ImageGrab.grab()
-            self.s.send_img(img)
+            do_job.thread_ongoing = False
 
     def connect_server(self):
         try:
-            self.s = client.socket_communicator('localhost', 5001)
+            self.server_socket = client.socket_communicator('localhost', 5001)
             print('server connected')
         except:
             print('connection failure')
@@ -70,13 +67,16 @@ class MarketPOSReader(QWidget):
     def read_info(self):
         try:
             f = open('company.txt', 'r', encoding='utf-8')
-            info = f.readline()
-            self.company_id = info
-            print_debug(f.readline())  # 주소
+            info = f.read().split('\n')
+            self.company_id = info[0]
+            self.company_name = info[1]
+            self.company_address = info[2]
+            self.company_table_address = info[3]
+            self.company_table_count = info[4]
         except FileExistsError or FileNotFoundError:
-            print('Creation Needed')
+            print('Creation Needed')  # 여기서 팝업 창 띄울 것
         except IndexError:
-            print('Information file Error')
+            print('File not correct')
 
     def initUI(self):
         self.center()
