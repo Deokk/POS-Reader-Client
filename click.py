@@ -19,13 +19,14 @@ def mouse_callback(event, y, x, flags, param):
         time.sleep(0.1)
 
 
-def call_img(img_):
-    return img_
+def call_img():
+    img = ImageGrab.grab()
+    return img
 
 
 def click_img(table_count):
     max_count = 0
-    img = ImageGrab.grab()
+    img = call_img()
     table = table_count
     cv.namedWindow('image_click')  # 마우스 이벤트 영역 윈도우 생성
     cv.setMouseCallback('image_click', mouse_callback, param=img)
