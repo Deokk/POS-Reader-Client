@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import time
 from PIL import ImageGrab
+import MarketPOSReader
 
 
 class socket_communicator:
@@ -34,10 +35,12 @@ class socket_communicator:
             self.s.sendall(binary_cv)
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
 
@@ -65,10 +68,12 @@ class socket_communicator:
                 self.s.sendall(text.encode())
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
 
@@ -82,9 +87,11 @@ class socket_communicator:
 
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
+            MarketPOSReader.Table.server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False

@@ -102,15 +102,17 @@ class Table(QWidget):
             print('server connected')
         except:
             print('connection failure')
-            msgBox = QMessageBox()
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setText("서버 연결을 실패했습니다.")
-            msgBox.setWindowTitle("서버 연결 실패")
-            msgBox.setStandardButtons(QMessageBox.Ok)
+            self.server_msg_dialog()
 
-            returnValue = msgBox.exec()
-            if returnValue == QMessageBox.Ok:
-                print('OK clicked')
+    def server_msg_dialog(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setText("서버 연결을 실패했습니다.")
+        msg_box.setWindowTitle("서버 연결 실패")
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        return_value = msg_box.exec()
+        if return_value == QMessageBox.Ok:
+            print('OK clicked')
 
     def name_dialog(self):
         if self.server_socket is not None:
@@ -119,14 +121,16 @@ class Table(QWidget):
             if ok:
                 self.server_socket.change_setting(0, text)
         else:
-            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
+            print('server connection needed')
+            self.server_msg_dialog()
 
     def table_dialog(self):
         if self.server_socket is not None:
             point, color = click.click_img(6)
             self.server_socket.change_setting(1, (point, color))
         else:
-            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
+            print('server connection needed')
+            self.server_msg_dialog()
 
     def region_dialog(self):
         if self.server_socket is not None:
@@ -135,7 +139,8 @@ class Table(QWidget):
             if ok:
                 self.server_socket.change_setting(2, text)
         else:
-            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
+            print('server connection needed')
+            self.server_msg_dialog()
 
     def number_dialog(self):
         if self.server_socket is not None:
@@ -144,7 +149,8 @@ class Table(QWidget):
             if ok:
                 self.server_socket.change_setting(3, text)
         else:
-            print('server connection needed')  # 팝업창 필요 : 서버와 연결하세요
+            print('server connection needed')
+            self.server_msg_dialog()
 
     def read_info(self):
         try:
@@ -164,6 +170,9 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
+        self.number_dialog
+        self.region_dialog
+        self.name_dialog
 
 
 if __name__ == '__main__':
