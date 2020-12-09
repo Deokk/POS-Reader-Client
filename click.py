@@ -14,7 +14,7 @@ max_count = 0
 def mouse_callback(event, y, x, flags, param):
     global max_count
     if mouse.is_pressed("left"):
-        point.append([x, y, param[x][y], 0])
+        point.append([x, y, param[x][y]])
         print(x, y)
         max_count = max_count + 1
         time.sleep(0.1)
