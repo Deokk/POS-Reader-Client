@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 
 import client
 import threading
-
+import click
 
 def print_debug(line):
     if True:
@@ -118,10 +118,7 @@ class Table(QWidget):
             self.le.setText(str(text))
 
     def table_dialog(self):
-        text, ok = QInputDialog.getText(self, '테이블 변경', '테이블:')
-
-        if ok:
-            self.le.setText(str(text))
+        print(click.click_img(6))
 
     def region_dialog(self):
         text, ok = QInputDialog.getText(self, '매장주소 변경', '매장주소:')
