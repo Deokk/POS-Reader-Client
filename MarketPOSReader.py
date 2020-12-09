@@ -55,6 +55,7 @@ class MarketPOSReader(QWidget):
 
     def capturing_sequence(self):
         while self.thread_ongoing:
+            print_debug("sequence ongoing")
             time.sleep(5)
             img = ImageGrab.grab()
             self.s.send_img(img)
