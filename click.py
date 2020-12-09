@@ -7,6 +7,8 @@ import numpy as np
 table = 0
 point = []
 max_count = 0
+color = []
+
 
 # 마우스 이벤트 콜백함수 정의
 
@@ -14,7 +16,8 @@ max_count = 0
 def mouse_callback(event, y, x, flags, param):
     global max_count
     if mouse.is_pressed("left"):
-        point.append([x, y, param[x][y]])
+        point.append([x, y])
+        color.append(param[x][y])
         print(x, y)
         max_count = max_count + 1
         time.sleep(0.1)
@@ -28,7 +31,7 @@ def call_img():
 def click_img(table_count):
     global max_count
     img = ImageGrab.grab()
-    img=cv.cvtColor(np.array(img),cv.COLOR_BGR2GRAY)
+    img = cv.cvtColor(np.array(img), cv.COLOR_BGR2GRAY)
     table = table_count
     cv.namedWindow('image')  # 마우스 이벤트 영역 윈도우 생성
     cv.setMouseCallback('image', mouse_callback, param=img)
@@ -41,4 +44,4 @@ def click_img(table_count):
         k = cv.waitKey(1) & 0xFF
     cv.destroyAllWindows()
 
-    return point
+    return point,color
