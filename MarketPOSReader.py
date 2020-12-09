@@ -6,6 +6,7 @@ import client
 import threading
 import click
 
+
 def print_debug(line):
     if True:
         print(line)
@@ -115,16 +116,17 @@ class Table(QWidget):
         text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
 
         if ok:
-            self.le.setText(str(text))
+            self.server_socket.change_setting(0, text)
 
     def table_dialog(self):
-        print(click.click_img(6))
+        point, color = click.click_img(6)
+        self.server_socket.change_setting(1, (point, color))
 
     def region_dialog(self):
         text, ok = QInputDialog.getText(self, '매장주소 변경', '매장주소:')
 
         if ok:
-            self.le.setText(str(text))
+            self.server_socket.change_setting(2, text)
 
     def number_dialog(self):
         text, ok = QInputDialog.getText(self, '수용인원 변경', '수용인원:')
