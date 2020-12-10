@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 
 from . import client
 import threading
-from . import click
+import click
 
 
 def print_debug(line):
@@ -131,7 +131,7 @@ class Table(QWidget):
         return_value = msg_box.exec()
         if return_value == QMessageBox.Ok:
             print('OK clicked')
-    
+
     def no_max_space_dialog(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Information)
@@ -141,7 +141,7 @@ class Table(QWidget):
         return_value = msg_box.exec()
         if return_value == QMessageBox.Ok:
             print('OK clicked')
-            
+
     def name_dialog(self):
         if self.server_socket is not None:
             text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
@@ -193,12 +193,14 @@ class Table(QWidget):
             self.server_msg_dialog()
 
     def set_setting_to_text(self):
-        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address, self.company_table_count]:
+        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address,
+                  self.company_table_count]:
             if i is None:
                 self.uncompleted_dialog()
                 return
         f = open('company.txt', 'w', encoding='utf-8')
-        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address, self.company_table_count]:
+        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address,
+                  self.company_table_count]:
             data = str(i) + '\n'
             f.write(data)
         f.close()

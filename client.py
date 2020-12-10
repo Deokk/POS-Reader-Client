@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import time
 from PIL import ImageGrab
-from . import MarketPOSReader
+import MarketPOSReader
 
 
 class socket_communicator:
