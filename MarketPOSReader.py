@@ -160,11 +160,13 @@ class Table(QWidget):
             time.sleep(0.5)
 
             if self.company_table_count is None:
-                self.no_max_space_dialog
-            point, color = click.click_img(self.company_table_count)
-            self.window().show()
-            self.server_socket.change_setting(1, (point, color))
-            self.company_table_address = point
+                self.no_max_space_dialog()
+                self.window().show()
+            else:
+                point, color = click.click_img(int(self.company_table_count))
+                self.window().show()
+                self.server_socket.change_setting(1, (point, color))
+                self.company_table_address = point
         else:
             print('server connection needed')
             self.server_msg_dialog()
@@ -175,7 +177,7 @@ class Table(QWidget):
 
             if ok:
                 self.server_socket.change_setting(2, text)
-                self.company_table_address = text
+                self.company_address = text
         else:
             print('server connection needed')
             self.server_msg_dialog()
@@ -196,9 +198,9 @@ class Table(QWidget):
             if i is None:
                 self.uncompleted_dialog()
                 return
-        f = open('company.txt', 'w')
+        f = open('company.txt', 'w', encoding='utf-8')
         for i in [self.company_id, self.company_name, self.company_address, self.company_table_address, self.company_table_count]:
-            data = i + '\n'
+            data = str(i) + '\n'
             f.write(data)
         f.close()
 
