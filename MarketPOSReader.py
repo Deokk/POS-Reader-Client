@@ -64,9 +64,9 @@ class Table(QWidget):
 
         self.tab1.layout = QVBoxLayout(self)
         self.tab1.layout.addWidget(self.name_input)
-        self.tab1.layout.addWidget(self.table_input)
         self.tab1.layout.addWidget(self.region_input)
         self.tab1.layout.addWidget(self.number_input)
+        self.tab1.layout.addWidget(self.table_input)
         self.tab1.layout.addWidget(self.set_setting)
         self.tab1.setLayout(self.tab1.layout)
 
