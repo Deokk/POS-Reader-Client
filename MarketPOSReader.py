@@ -90,24 +90,23 @@ class Table(QWidget):
     def start_capture(self):
         if self.server_socket is not None:
             if self.capture_button.text() == 'POS 캡쳐 및 전송':
-                self.window().hide()
-                time.sleep(0.5)
-                self.window().show()
+                self.window().showMinimized()
                 self.capture_button.setText('캡쳐 중지')
-                client.socket_communicator.thread_ongoing = True
+                self.server_socket.thread_ongoing = True
                 self.capturing_thread = threading.Thread(target=self.server_socket.capturing_sequence,
                                                          args=(self.server_socket,))
                 self.capturing_thread.start()
 
             elif self.capture_button.text() == '캡쳐 중지':
                 self.capture_button.setText('POS 캡쳐 및 전송')
-                client.socket_communicator.thread_ongoing = False
+                self.server_socket.thread_ongoing = False
         else:
             self.server_msg_dialog()
 
     def connect_server(self):
         try:
             self.server_socket = client.socket_communicator('localhost', 5001)
+            self.server_socket.company_id = self.company_id
             print('server connected')
         except:
             print('connection failure')
