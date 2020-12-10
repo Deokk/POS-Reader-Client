@@ -92,6 +92,7 @@ class socket_communicator:
 
     def create_new_market(self):
         try:
+            time.sleep(2)
             job_number = "0"
             self.s.sendall('0'.encode())
             time.sleep(1)
