@@ -105,12 +105,13 @@ class Table(QWidget):
 
     def connect_server(self):
         try:
-            self.server_socket = client.socket_communicator('localhost', 5001)
+            self.server_socket = client.socket_communicator('192.168.25.53', 5001)
             self.server_socket.company_id = self.company_id
             print('server connected')
         except:
             print('connection failure')
             self.server_msg_dialog()
+            sys.exit()
 
     def server_msg_dialog(self):
         msg_box = QMessageBox()
