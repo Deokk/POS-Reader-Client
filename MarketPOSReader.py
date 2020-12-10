@@ -220,7 +220,10 @@ class Table(QWidget):
 
     def new_market(self):
         self.connect_server()
-        new_id = self.server_socket.create_new_market()
+        try:
+            new_id = self.server_socket.create_new_market()
+        except AttributeError:
+            print('server not online')
         self.company_id = new_id
         self.uncompleted_dialog()
 

@@ -8,7 +8,7 @@ import MarketPOSReader
 
 class socket_communicator:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    company_id = None
+    company_id = '0'
     thread_ongoing = None
 
     def __init__(self, tcp_ip: str, tcp_port: int):
@@ -82,7 +82,7 @@ class socket_communicator:
     def create_new_market(self):
         try:
             job_number = "0"
-            self.s.sendall(self.company_id.encode())
+            self.s.sendall('0'.encode())
             time.sleep(1)
             self.s.sendall(job_number.encode())
             new_id = int((self.s.recv(4)).decode())
