@@ -3,7 +3,18 @@ import cv2
 import numpy as np
 import time
 from PIL import ImageGrab
-import MarketPOSReader
+from PyQt5.QtWidgets import QMessageBox
+
+
+def server_msg_dialog():
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Information)
+    msg_box.setText("서버 연결을 실패했습니다.")
+    msg_box.setWindowTitle("서버 연결 실패")
+    msg_box.setStandardButtons(QMessageBox.Ok)
+    return_value = msg_box.exec()
+    if return_value == QMessageBox.Ok:
+        print('OK clicked')
 
 
 class socket_communicator:
@@ -37,12 +48,12 @@ class socket_communicator:
             self.s.sendall(binary_cv)
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
 
@@ -70,12 +81,12 @@ class socket_communicator:
                 self.s.sendall(text.encode())
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
 
@@ -90,14 +101,13 @@ class socket_communicator:
             print('Creation Needed')
             return new_id
 
-
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False
         except OSError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
-            MarketPOSReader.Table.server_msg_dialog()
+            server_msg_dialog()
             self.s.close()
             self.thread_ongoing = False

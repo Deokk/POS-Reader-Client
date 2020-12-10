@@ -4,7 +4,7 @@ import time
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtWidgets import *
 
-from . import client
+import client
 import threading
 import click
 
@@ -142,6 +142,16 @@ class Table(QWidget):
         if return_value == QMessageBox.Ok:
             print('OK clicked')
 
+    def dialog(self, text, title):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setText(text)
+        msg_box.setWindowTitle(title)
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        return_value = msg_box.exec()
+        if return_value == QMessageBox.Ok:
+            print('OK clicked')
+
     def name_dialog(self):
         if self.server_socket is not None:
             text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
@@ -204,6 +214,7 @@ class Table(QWidget):
             data = str(i) + '\n'
             f.write(data)
         f.close()
+        self.dialog("설정이 적용되었습니다", "설정 완료")
 
     def read_info(self):
         try:
