@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 
 import client
 import threading
-import click
+from . import click
 
 
 def print_debug(line):
