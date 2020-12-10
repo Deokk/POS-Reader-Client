@@ -54,37 +54,20 @@ class Table(QWidget):
         self.table_input = QPushButton('테이블 변경')
         self.region_input = QPushButton('매장주소 변경')
         self.number_input = QPushButton('최대수용인원 변경')
-
-        notification = ""
-
-        try:
-            f = open('company.txt', 'r', encoding='utf-8')
-            info = f.read().split('\n')
-            self.company_id = info[0]
-            self.company_name = info[1]
-            self.company_address = info[2]
-            self.company_table_address = info[3]
-            self.company_table_count = info[4]
-            notification = "매장 정보 설정이 완료되었습니다.\nPOS-Reader 탭에서 정보 전송을 진행해주세요."
-
-        except FileExistsError and FileNotFoundError:
-            self.new_market()
-
-        except IndexError:
-            notification = "매장 정보 설정이 미완료 되었습니다.\n정보를 갱신하고 POS-Reader 탭으로 이동해주세요."
+        self.set_setting = QPushButton('설정 적용')
 
         self.name_input.clicked.connect(self.name_dialog)
         self.table_input.clicked.connect(self.table_dialog)
         self.region_input.clicked.connect(self.region_dialog)
         self.number_input.clicked.connect(self.number_dialog)
-        self.notification_label = QLabel(notification, self)
+        self.set_setting.clicked.connect(self.set_setting_to_text)
 
         self.tab1.layout = QVBoxLayout(self)
         self.tab1.layout.addWidget(self.name_input)
         self.tab1.layout.addWidget(self.table_input)
         self.tab1.layout.addWidget(self.region_input)
         self.tab1.layout.addWidget(self.number_input)
-        self.tab1.layout.addWidget(self.notification_label)
+        self.tab1.layout.addWidget(self.set_setting)
         self.tab1.setLayout(self.tab1.layout)
 
         self.capture_button = QPushButton('POS 캡쳐 및 전송')
@@ -125,7 +108,6 @@ class Table(QWidget):
     def connect_server(self):
         try:
             self.server_socket = client.socket_communicator('localhost', 5001)
-            self.server_socket.company_id = self.company_id
             print('server connected')
         except:
             print('connection failure')
@@ -141,12 +123,23 @@ class Table(QWidget):
         if return_value == QMessageBox.Ok:
             print('OK clicked')
 
+    def uncompleted_dialog(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setText("설정이 완료되지 않았습니다.")
+        msg_box.setWindowTitle("설정 미완료")
+        msg_box.setStandardButtons(QMessageBox.Ok)
+        return_value = msg_box.exec()
+        if return_value == QMessageBox.Ok:
+            print('OK clicked')
+
     def name_dialog(self):
         if self.server_socket is not None:
             text, ok = QInputDialog.getText(self, '매장명 변경', '매장명:')
 
             if ok:
                 self.server_socket.change_setting(0, text)
+                self.company_name = text
         else:
             print('server connection needed')
             self.server_msg_dialog()
@@ -158,6 +151,7 @@ class Table(QWidget):
             point, color = click.click_img(6)
             self.window().show()
             self.server_socket.change_setting(1, (point, color))
+            self.company_table_address = point
         else:
             print('server connection needed')
             self.server_msg_dialog()
@@ -168,6 +162,7 @@ class Table(QWidget):
 
             if ok:
                 self.server_socket.change_setting(2, text)
+                self.company_table_address = text
         else:
             print('server connection needed')
             self.server_msg_dialog()
@@ -178,9 +173,21 @@ class Table(QWidget):
 
             if ok:
                 self.server_socket.change_setting(3, text)
+                self.company_table_count = text
         else:
             print('server connection needed')
             self.server_msg_dialog()
+
+    def set_setting_to_text(self):
+        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address, self.company_table_count]:
+            if i is None:
+                self.uncompleted_dialog()
+                return
+        f = open('company.txt', 'w')
+        for i in [self.company_id, self.company_name, self.company_address, self.company_table_address, self.company_table_count]:
+            data = i + '\n'
+            f.write(data)
+        f.close()
 
     def read_info(self):
         try:
@@ -200,6 +207,8 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
+        self.company_id = new_id
+        self.uncompleted_dialog()
 
 
 if __name__ == '__main__':

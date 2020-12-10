@@ -9,9 +9,11 @@ import MarketPOSReader
 class socket_communicator:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     company_id = None
-    thread_ongoing = False
+    thread_ongoing = None
 
     def __init__(self, tcp_ip: str, tcp_port: int):
+        self.company_id = '0'
+        self.thread_ongoing = False
         self.s.connect((tcp_ip, tcp_port))
 
     def capturing_sequence(self, server_socket):
@@ -80,14 +82,14 @@ class socket_communicator:
     def create_new_market(self):
         try:
             job_number = "0"
+            self.s.sendall(self.company_id.encode())
+            time.sleep(1)
             self.s.sendall(job_number.encode())
-            # new_id = int((self.s.recv(4)).decode())
-            new_id = 3
-            print('Creation Needed')  # 여기서 팝업 창 띄울 것 : 세팅을 진행해주세요 with new_id
-            # string으로 전부 받아와서 진행
-            MarketPOSReader.Table.number_dialog()
-            MarketPOSReader.Table.region_dialog()
-            MarketPOSReader.Table.name_dialog()
+            new_id = int((self.s.recv(4)).decode())
+            self.company_id = str(new_id)
+            print('Creation Needed')
+            return new_id
+
 
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
