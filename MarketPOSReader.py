@@ -172,10 +172,6 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
-<<<<<<< HEAD
-=======
-
->>>>>>> 50fa1f95f2a1259675167b517d69e46d5fdb9dae
 
 
 if __name__ == '__main__':
