@@ -45,21 +45,8 @@ class Table(QWidget):
         self.tab2 = QWidget()
         self.tabs.resize(300, 200)
 
-        self.tabs.addTab(self.tab1, "POS-Reader")
-        self.tabs.addTab(self.tab2, "Settings")
-
-        self.capture_button = QPushButton('POS 캡쳐 및 전송')
-        self.connect_server_button = QPushButton('서버 연결')
-        self.cancel_button = QPushButton('종료')
-        self.capture_button.clicked.connect(self.start_capture)
-        self.cancel_button.clicked.connect(QCoreApplication.instance().quit)
-        self.connect_server_button.clicked.connect(self.connect_server)
-
-        self.tab1.layout = QVBoxLayout(self)
-        self.tab1.layout.addWidget(self.capture_button)
-        self.tab1.layout.addWidget(self.connect_server_button)
-        self.tab1.layout.addWidget(self.cancel_button)
-        self.tab1.setLayout(self.tab1.layout)
+        self.tabs.addTab(self.tab1, "Settings")
+        self.tabs.addTab(self.tab2, "POS-Reader")
 
         self.name_input = QPushButton('매장명 변경')
         self.table_input = QPushButton('테이블 변경')
@@ -70,11 +57,24 @@ class Table(QWidget):
         self.region_input.clicked.connect(self.region_dialog)
         self.number_input.clicked.connect(self.number_dialog)
 
+        self.tab1.layout = QVBoxLayout(self)
+        self.tab1.layout.addWidget(self.name_input)
+        self.tab1.layout.addWidget(self.table_input)
+        self.tab1.layout.addWidget(self.region_input)
+        self.tab1.layout.addWidget(self.number_input)
+        self.tab1.setLayout(self.tab1.layout)
+
+        self.capture_button = QPushButton('POS 캡쳐 및 전송')
+        self.connect_server_button = QPushButton('서버 연결')
+        self.cancel_button = QPushButton('종료')
+        self.capture_button.clicked.connect(self.start_capture)
+        self.cancel_button.clicked.connect(QCoreApplication.instance().quit)
+        self.connect_server_button.clicked.connect(self.connect_server)
+
         self.tab2.layout = QVBoxLayout(self)
-        self.tab2.layout.addWidget(self.name_input)
-        self.tab2.layout.addWidget(self.table_input)
-        self.tab2.layout.addWidget(self.region_input)
-        self.tab2.layout.addWidget(self.number_input)
+        self.tab2.layout.addWidget(self.capture_button)
+        self.tab2.layout.addWidget(self.connect_server_button)
+        self.tab2.layout.addWidget(self.cancel_button)
         self.tab2.setLayout(self.tab2.layout)
 
         self.layout.addWidget(self.tabs)
@@ -170,9 +170,6 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
-        self.number_dialog
-        self.region_dialog
-        self.name_dialog
 
 
 if __name__ == '__main__':
