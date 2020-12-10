@@ -94,6 +94,8 @@ class Table(QWidget):
             elif self.capture_button.text() == '캡쳐 중지':
                 self.capture_button.setText('POS 캡쳐 및 전송')
                 client.socket_communicator.thread_ongoing = False
+        else:
+            self.server_msg_dialog()
 
     def connect_server(self):
         try:
@@ -170,9 +172,7 @@ class Table(QWidget):
     def new_market(self):
         self.connect_server()
         new_id = self.server_socket.create_new_market()
-        self.number_dialog
-        self.region_dialog
-        self.name_dialog
+
 
 
 if __name__ == '__main__':

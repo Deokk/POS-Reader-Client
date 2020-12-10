@@ -81,9 +81,13 @@ class socket_communicator:
         try:
             job_number = "0"
             self.s.sendall(job_number.encode())
-            new_id = int((self.s.recv(4)).decode())
+            # new_id = int((self.s.recv(4)).decode())
+            new_id = 3
             print('Creation Needed')  # 여기서 팝업 창 띄울 것 : 세팅을 진행해주세요 with new_id
             # string으로 전부 받아와서 진행
+            MarketPOSReader.Table.number_dialog()
+            MarketPOSReader.Table.region_dialog()
+            MarketPOSReader.Table.name_dialog()
 
         except ConnectionError:
             print('Connection needed')  # 팝업창 필요 : 서버와의 연결을 확인해주세요
