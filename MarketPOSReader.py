@@ -4,7 +4,7 @@ import time
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtWidgets import *
 
-import client
+from . import client
 import threading
 from . import click
 
