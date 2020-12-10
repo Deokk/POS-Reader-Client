@@ -1,4 +1,6 @@
 import sys
+import time
+
 from PyQt5.QtCore import QCoreApplication, pyqtSlot
 from PyQt5.QtWidgets import *
 
@@ -105,7 +107,9 @@ class Table(QWidget):
     def start_capture(self):
         if self.server_socket is not None:
             if self.capture_button.text() == 'POS 캡쳐 및 전송':
-                self.showMinimized()
+                self.window().hide()
+                time.sleep(0.5)
+                self.window().show()
                 self.capture_button.setText('캡쳐 중지')
                 client.socket_communicator.thread_ongoing = True
                 self.capturing_thread = threading.Thread(target=self.server_socket.capturing_sequence,
@@ -149,7 +153,10 @@ class Table(QWidget):
 
     def table_dialog(self):
         if self.server_socket is not None:
+            self.window().hide()
+            time.sleep(0.5)
             point, color = click.click_img(6)
+            self.window().show()
             self.server_socket.change_setting(1, (point, color))
         else:
             print('server connection needed')
