@@ -52,16 +52,37 @@ class Table(QWidget):
         self.table_input = QPushButton('테이블 변경')
         self.region_input = QPushButton('매장주소 변경')
         self.number_input = QPushButton('최대수용인원 변경')
+
+        notification = ""
+
+        try:
+            f = open('company.txt', 'r', encoding='utf-8')
+            info = f.read().split('\n')
+            self.company_id = info[0]
+            self.company_name = info[1]
+            self.company_address = info[2]
+            self.company_table_address = info[3]
+            self.company_table_count = info[4]
+            notification = "매장 정보 설정이 완료되었습니다.\nPOS-Reader 탭에서 정보 전송을 진행해주세요."
+
+        except FileExistsError and FileNotFoundError:
+            self.new_market()
+
+        except IndexError:
+            notification = "매장 정보 설정이 미완료 되었습니다.\n정보를 갱신하고 POS-Reader 탭으로 이동해주세요."
+
         self.name_input.clicked.connect(self.name_dialog)
         self.table_input.clicked.connect(self.table_dialog)
         self.region_input.clicked.connect(self.region_dialog)
         self.number_input.clicked.connect(self.number_dialog)
+        self.notification_label = QLabel(notification, self)
 
         self.tab1.layout = QVBoxLayout(self)
         self.tab1.layout.addWidget(self.name_input)
         self.tab1.layout.addWidget(self.table_input)
         self.tab1.layout.addWidget(self.region_input)
         self.tab1.layout.addWidget(self.number_input)
+        self.tab1.layout.addWidget(self.notification_label)
         self.tab1.setLayout(self.tab1.layout)
 
         self.capture_button = QPushButton('POS 캡쳐 및 전송')
